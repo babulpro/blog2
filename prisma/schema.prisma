@@ -1,0 +1,91 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+ 
+
+model categories {
+  id       String  @id @default(auto()) @map("_id") @db.ObjectId
+  name      String      @unique
+  news_list news_list[]
+  createdAt DateTime    @default(now()) 
+  updatedAt DateTime    @default(now()) @updatedAt
+}
+
+model news_list {
+  id       String  @id @default(auto()) @map("_id") @db.ObjectId
+  title      String     
+  short_des  String     
+  img1       String     
+  img2       String     
+  img3       String    
+  img4       String     
+  keywords   String    
+  long_des   String    
+  type       String     
+  catID      String      @db.ObjectId
+  comments   comments[]
+  categories categories @relation(fields: [catID], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  createdAt  DateTime   @default(now()) 
+  updatedAt  DateTime   @default(now())
+}
+
+model users {
+  id       String  @id @default(auto()) @map("_id") @db.ObjectId
+  firstName String    
+  lastName  String     
+  email     String    @unique 
+  mobile    String     
+  password  String     
+  otp       String    
+  comments  comments[]
+  createdAt DateTime   @default(now()) 
+  updatedAt DateTime   @default(now()) @updatedAt 
+}
+
+model comments {
+  id       String  @id @default(auto()) @map("_id") @db.ObjectId
+  userID       String   @db.ObjectId
+  postID       String   @db.ObjectId
+  users        users     @relation(fields: [userID], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  news_list    news_list @relation(fields: [postID], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  descriptions String    
+  createdAt    DateTime  @default(now()) 
+  updatedAt    DateTime  @default(now()) @updatedAt
+}
+
+
+model socials {
+  id       String  @id @default(auto()) @map("_id") @db.ObjectId
+  facebook  String   
+  youtube   String   
+  twitter   String   
+  linkedin  String   
+  about     String  
+  address   String   
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) 
+}
+
+model subscribers {
+  id       String  @id @default(auto()) @map("_id") @db.ObjectId
+  email     String   @unique
+  createdAt DateTime @default(now()) 
+  updatedAt DateTime @default(now()) 
+}
+
+model policies {
+  id       String  @id @default(auto()) @map("_id") @db.ObjectId
+  long_des String 
+  type     String
+}
