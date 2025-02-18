@@ -1,8 +1,21 @@
 
 import Link from 'next/link';
-import React from 'react';
+import React, { use, useEffect, useState } from 'react';
 
-const Navbar = ({data}) => {
+const Navbar = () => {
+    const [data,setData]=useState([]);
+    useEffect(()=>{
+       (async()=> fetch("http://localhost:3000/api/category",{
+        method:"GET",
+        headers:{
+            "Content-Type":"application/json"
+        }
+    }).then((res)=>res.json())
+    .then((data)=>{
+        setData(data.data); }))()
+        
+        },[])
+             
   
     return (
         <div className="navbar bg-base-100">
